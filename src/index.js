@@ -8,6 +8,7 @@ import {BrowserRouter} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+    // What is the difference between just Router?
     <BrowserRouter>
         <App/>
     </BrowserRouter>
