@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import axiosInstance from "../../api/axiosInstance";
+import {BASE_URL} from "../../api/apiConfig";
+import BasicInput from "../../Components/common/BasicInput";
+import BasicFileInput from "../../Components/common/BasicFileInput";
 
 const AddCategoryPage = () => {
     const [Name, setName] = useState('');
@@ -12,12 +16,12 @@ const AddCategoryPage = () => {
         formData.append('Image', Image);
 
         try {
-            await axios.post('http://localhost:5187/api/Categories', formData, {
+            var result = await axiosInstance.post(`${BASE_URL}/api/Categories`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            alert('Category added!');
+            alert('Category added!',result);
             setName('');
             setImage(null);
         } catch (err) {
@@ -30,26 +34,17 @@ const AddCategoryPage = () => {
         <div className="card p-4 shadow-sm">
             <h2 className="mb-4">Add Category</h2>
             <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">Category Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={Name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Image</label>
-                    <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) => setImage(e.target.files[0])}
-                        accept="image/*"
-                        required
-                    />
-                </div>
+                <BasicInput
+                    label={"Name"}
+                    value={Name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+
+                <BasicFileInput
+                    label={"Image"}
+                    onChange={(e) => setImage(e.target.files[0])}
+                />
+
                 <button type="submit" className="btn btn-primary">Add</button>
             </form>
         </div>
