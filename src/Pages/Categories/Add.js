@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import axiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
 import BasicInput from "../../Components/common/BasicInput";

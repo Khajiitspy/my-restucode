@@ -1,4 +1,4 @@
-const basicInput = ({label,onChange}) => {
+const BasicFileInput = ({label,onChange,required}) => {
     return (
         <>
             <div className="mb-3">
@@ -8,11 +8,11 @@ const basicInput = ({label,onChange}) => {
                     className="form-control"
                     onChange={onChange}
                     accept="image/*"
-                    required
+                    required = {required}
                 />
             </div>
         </>
     )
 }
 
-export default basicInput;
+export default BasicFileInput;
