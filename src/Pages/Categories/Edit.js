@@ -51,7 +51,7 @@ const EditCategoryPage = () => {
                     image: null
                 });
                 console.log('Initial values', initialValues);
-                setViewImage(res.data.viewImage);
+                setViewImage(res.data.image);
             })
             .catch(err => {
                 alert("Failed to load category");
@@ -69,30 +69,32 @@ const EditCategoryPage = () => {
 
         try {
             await axiosInstance.put(`/api/Categories/${values.id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: {'Content-Type': 'multipart/form-data'}
             });
             alert('Category updated!');
             navigate('/');
-        } catch (err) {
-            if (err.response && err.response.status === 400) {
-                const data = err.response.data;
-                const newErrors = {};
+        } catch(err) {
+            console.error("Send request error", err);
 
-                if (Array.isArray(data)) {
-                    data.forEach(error => {
-                        if (error.field && error.error) {
-                            const key = error.field.charAt(0).toLowerCase() + error.field.slice(1);
-                            newErrors[key] = error.error;
-                        }
+            const serverErrors = {};
+            const {response} = err;
+            const {data} = response;
+            if(data) {
+                const {errors} = data;
+                Object.entries(errors).forEach(([key, messages]) => {
+                    let messageLines = "";
+                    messages.forEach(message => {
+                        messageLines += message+" ";
+                        console.log(`${key}: ${message}`);
                     });
-                }
+                    const field = key.charAt(0).toLowerCase() + key.slice(1);
+                    serverErrors[field] = messageLines;
 
-                console.log("Parsed validation errors:", newErrors);
-                setErrors(newErrors);
-            } else {
-                alert('An unexpected error occurred');
-                console.error(err);
+                });
             }
+            console.log("response", response);
+            console.log("serverErrors", serverErrors);
+            setErrors(serverErrors);
         }
     }
 
@@ -118,6 +120,19 @@ const EditCategoryPage = () => {
 
         formik.setTouched({ ...formik.touched, imageFile: true });
     };
+
+    const handleDelete = async () => {
+        if (window.confirm(`Are you sure you want to delete the category: ${values.name}?`)) {
+            try {
+                await axiosInstance.delete(`/api/Categories/${id}`);
+                alert("Category deleted!");
+                navigate("/");
+            } catch (error) {
+                console.error("Delete failed", error);
+                alert("Failed to delete category.");
+            }
+        }
+    }
 
     return (
         <div className="card p-4 shadow-sm">
@@ -152,7 +167,11 @@ const EditCategoryPage = () => {
                     required={false}
                 />
 
-                <button type="submit" className="btn btn-primary mt-3">Save</button>
+                <div className="d-flex justify-content-between mt-4">
+                    <button type="submit" className="btn btn-primary">Save</button>
+                    <button type="button" className="btn btn-danger" onClick={handleDelete}>Delete</button>
+                </div>
+
             </form>
         </div>
     );

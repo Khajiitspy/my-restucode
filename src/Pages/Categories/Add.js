@@ -37,25 +37,33 @@ const AddCategoryPage = () => {
 
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                const data = error.response.data;
-                const fieldErrors = {};
+
+                console.error("Send request error", error);
 
                 const fieldMap = {
                     Name: "name",
                     Image: "imageFile"
                 };
 
-                if (Array.isArray(data)) {
-                    data.forEach(err => {
-                        if (err.field && err.error) {
-                            const formField = fieldMap[err.field] ?? err.field.toLowerCase();
-                            fieldErrors[formField] = err.error;
-                        }
+                const serverErrors = {};
+                const {response} = error;
+                const {data} = response;
+                if(data) {
+                    const {errors} = data;
+                    Object.entries(errors).forEach(([key, messages]) => {
+                        let messageLines = "";
+                        messages.forEach(message => {
+                            messageLines += message+" ";
+                            console.log(`${key}: ${message}`);
+                        });
+                        const field = fieldMap[key] ?? key.toLowerCase();
+                        serverErrors[field] = messageLines;
+
                     });
                 }
-
-                console.log("Parsed field errors", fieldErrors);
-                setErrors(fieldErrors);
+                console.log("response", response);
+                console.log("serverErrors", serverErrors);
+                setErrors(serverErrors);
             } else {
                 alert("An unexpected error occurred.");
                 console.error(error);
