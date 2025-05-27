@@ -5,6 +5,7 @@ import AddCategoryPage from "./Pages/Categories/Add";
 import Layout from "./Components/Layout";
 import NoMatch from "./Pages/NoMatch";
 import EditCategoryPage from "./Pages/Categories/Edit";
+import LoginPage from "./Pages/Account/Login"
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
                     <Route index element={<CategoriesPage />} />
                     <Route path={"categoriesCreate"} element={<AddCategoryPage />} />
                     <Route path="/categoriesEdit/:id" element={<EditCategoryPage />} />
+                    <Route path={"Login"} element={<LoginPage />} />
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
