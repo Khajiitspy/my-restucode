@@ -6,8 +6,23 @@ import Layout from "./Components/Layout";
 import NoMatch from "./Pages/NoMatch";
 import EditCategoryPage from "./Pages/Categories/Edit";
 import LoginPage from "./Pages/Account/Login"
+import RegisterPage from "./Pages/Account/Register"
+// import {useAuthStore} from "./Store/AuthStore";
+// import {jwtDecode} from "jwt-decode";
+// import {useEffect} from "react";
+//import LoginPage from "./Pages/Account/Login/index"
 
 const App = () => {
+    // const { setUser } = useAuthStore((state) => state);
+    //
+    // useEffect(() => {
+    //     const token = localStorage.getItem("jwt");
+    //     if (token) {
+    //         const decoded = jwtDecode(token);
+    //         setUser(decoded);
+    //     }
+    // },[]);
+
     return (
         <>
             <Routes>
@@ -16,6 +31,7 @@ const App = () => {
                     <Route path={"categoriesCreate"} element={<AddCategoryPage />} />
                     <Route path="/categoriesEdit/:id" element={<EditCategoryPage />} />
                     <Route path={"Login"} element={<LoginPage />} />
+                    <Route path={"Register"} element={<RegisterPage />} />
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

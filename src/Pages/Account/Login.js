@@ -2,13 +2,19 @@
 import axiosInstance from "../../api/axiosInstance";
 import {BASE_URL} from "../../api/apiConfig";
 import {useNavigate} from "react-router-dom";
-import BasicInput from "../../Components/common/BasicInput";
+// import BasicInput from "../../Components/common/BasicInput";
 import { useAuth } from "../../context/AuthContext";
+import {useState} from "react";
+import {mapServerErrorsToFormik} from "../../Helpers/FormikErrorHelper.js";
+import {EmailInput} from "../../Components/common/EmailInput";
+import {PasswordInput} from "../../Components/common/PasswordInput";
+//import {useAuthStore} from "../../Store/AuthStore.js";
 
 
 import * as Yup from "yup";
 import {useFormik} from "formik";
 import {jwtDecode} from "jwt-decode";
+import LoadingOverlay from "../../Components/common/LoadingOverlay";
 
 const validationSchema = Yup.object().shape({
     email: Yup.string().required("Please Enter Email!"),
@@ -16,7 +22,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const LoginPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
 
+    // const { setUser, user } = useAuthStore((state) => state);
+    // console.log("User authenticated", user);
     const { setUser } = useAuth();
 
     const initValues = {
@@ -25,6 +34,8 @@ const LoginPage = () => {
     };
 
     const handleFormikSubmit = async (values, { setErrors }) => {
+        setIsLoading(true);
+        console.log("Submit formik", values);
         const formData = new FormData();
         formData.append("email", values.email);
         formData.append("password", values.password);
@@ -34,10 +45,13 @@ const LoginPage = () => {
             const token = response.data.token;
             localStorage.setItem('token', token);
 
+            // const decoded = jwtDecode(token);
+            // setUser(decoded);
             const payload = jwtDecode(token);
             setUser({
                 email: payload['email'],
                 name: payload['name'],
+                image: payload['image'],
             });
 
             navigate('/');
@@ -52,25 +66,27 @@ const LoginPage = () => {
                     Password: "password"
                 };
 
-                const serverErrors = {};
-                const {response} = error;
-                const {data} = response;
-                if(data) {
-                    const {errors} = data;
-                    Object.entries(errors).forEach(([key, messages]) => {
-                        let messageLines = "";
-                        messages.forEach(message => {
-                            messageLines += message+" ";
-                            console.log(`${key}: ${message}`);
-                        });
-                        const field = fieldMap[key] ?? key.toLowerCase();
-                        serverErrors[field] = messageLines;
+                mapServerErrorsToFormik(error, setErrors, fieldMap);
 
-                    });
-                }
-                console.log("response", response);
-                console.log("serverErrors", serverErrors);
-                setErrors(serverErrors);
+                // const serverErrors = {};
+                // const {response} = error;
+                // const {data} = response;
+                // if(data) {
+                //     const {errors} = data;
+                //     Object.entries(errors).forEach(([key, messages]) => {
+                //         let messageLines = "";
+                //         messages.forEach(message => {
+                //             messageLines += message+" ";
+                //             console.log(`${key}: ${message}`);
+                //         });
+                //         const field = fieldMap[key] ?? key.toLowerCase();
+                //         serverErrors[field] = messageLines;
+                //
+                //     });
+                // }
+                // console.log("response", response);
+                // console.log("serverErrors", serverErrors);
+                // setErrors(serverErrors);
             } else if (error.response && error.response.status === 401) { // User unknown
 
                 const serverErrors = {};
@@ -84,6 +100,7 @@ const LoginPage = () => {
                 console.error(error);
             }
         }
+        setIsLoading(false);
 
     };
 
@@ -106,29 +123,27 @@ const LoginPage = () => {
         <>
             <h1 className={"text-center"}>Login</h1>
             <form onSubmit={handleSubmit} className={"col-md-6 offset-md-3"}>
-                <BasicInput
-                    label={"Email"}
-                    field={"email"}
+                <EmailInput
+                    label="Email"
+                    field="email"
                     error={errors.email}
                     touched={touched.email}
                     value={values.email}
                     onChange={handleChange}
-                    onBlur={formik.handleBlur} 
-                    required={true}
                 />
 
-                <BasicInput
-                    label={"Password"}
-                    field={"password"}
+                <PasswordInput
+                    label="Пароль"
+                    field="password"
                     error={errors.password}
                     touched={touched.password}
                     value={values.password}
                     onChange={handleChange}
-                    onBlur={formik.handleBlur} 
-                    required={true}
                 />
 
                 <button type="submit" className="btn btn-primary">Login</button>
+
+                {isLoading && <LoadingOverlay />}
             </form>
         </>
     )

@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
                 setUser({
                     name: decoded["name"],
                     email: decoded["email"],
+                    image: decoded["image"],
                     token
                 });
             } catch (e) {
@@ -30,6 +31,7 @@ export const AuthProvider = ({ children }) => {
         setUser({
             name: decoded["name"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"] ?? "",
             email: decoded["email"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ?? "",
+            image: decoded["email"] ?? decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"] ?? "",
             token
         });
     };

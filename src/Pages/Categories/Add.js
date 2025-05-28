@@ -109,7 +109,7 @@ const AddCategoryPage = () => {
                     touched={touched.name}
                     value={values.name}
                     onChange={handleChange}
-                    onBlur={formik.handleBlur} // Add this!
+                    onBlur={formik.handleBlur}
                     required={true}
                 />
 
