@@ -38,15 +38,10 @@ const RegisterPage = () => {
 		setIsLoading(true);
 		console.log("submit formik", values);
 		
-		const formData = new FormData();
-		formData.append("Email", values.email);
-		formData.append("Password",values.password);
-		formData.append("Image",values.imageFile);
-		formData.append("LastName",values.lastName);
-		formData.append("FirstName",values.firstName);
+		values.Image = values.imageFile;
 		
 		try{
-			const response = await axiosInstance.post(`${BASE_URL}/api/Account/Register` , formData, {
+			const response = await axiosInstance.post(`${BASE_URL}/api/Account/Register` , values, {
 				headers: {
 				    "Content-Type": "multipart/form-data",
 				},
@@ -167,7 +162,7 @@ const RegisterPage = () => {
 	                onChange={handleChange}
 	            />
 
-	            <button type="submit" className="btn btn-primary">Login</button>
+	            <button type="submit" className="btn btn-primary">Register</button>
 
 	            {isLoading && <LoadingOverlay />}
 	        </form>
