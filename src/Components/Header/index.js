@@ -21,6 +21,11 @@ const Header = () => {
                                 Categories
                             </NavLink>
                         </li>
+                        <li className="nav-item">
+                            <NavLink to="/products" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                Products
+                            </NavLink>
+                        </li>
                     </ul>
 
                     <ul className="navbar-nav ms-auto">

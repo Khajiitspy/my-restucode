@@ -7,6 +7,8 @@ import NoMatch from "./Pages/NoMatch";
 import EditCategoryPage from "./Pages/Categories/Edit";
 import LoginPage from "./Pages/Account/Login"
 import RegisterPage from "./Pages/Account/Register"
+import ProductsPage from "./Pages/Products"
+import ProductDetailsPage from "./Pages/Products/Details"
 // import {useAuthStore} from "./Store/AuthStore";
 // import {jwtDecode} from "jwt-decode";
 // import {useEffect} from "react";
@@ -32,6 +34,8 @@ const App = () => {
                     <Route path="/categoriesEdit/:id" element={<EditCategoryPage />} />
                     <Route path={"Login"} element={<LoginPage />} />
                     <Route path={"Register"} element={<RegisterPage />} />
+                    <Route path={"Products"} element={<ProductsPage />} />
+                    <Route path="/ProductDetails/:id" element={<ProductDetailsPage />} />
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

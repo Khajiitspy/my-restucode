@@ -1,0 +1,67 @@
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+import axiosInstance from "../../api/axiosInstance";
+import {BASE_URL} from "../../api/apiConfig";
+
+const ProductDetailsPage = () => {
+    const {id} = useParams();
+    const [product, setProduct] = useState(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        axiosInstance.get(`/api/products/${id}`).then(res => {
+            setProduct(res.data);
+        });
+    }, [id]);
+
+    const nextImage = () => {
+        setCurrentImageIndex((prev) =>
+            (prev + 1) % (product?.images?.length || 1)
+        );
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex((prev) =>
+            (prev - 1 + (product?.images?.length || 1)) % (product?.images?.length || 1)
+        );
+    };
+
+    if (!product) return <div>Loading...</div>;
+
+    const currentImage = product.images[currentImageIndex];
+
+    return (
+        <div className="container py-5">
+            <h1 className="mb-4 text-center">{product.name}</h1>
+            <div className="row g-4">
+                <div className="col-md-6 d-flex flex-column align-items-center">
+                    <img
+                        src={`${BASE_URL}/images/800_${currentImage}`}
+                        alt={product.name}
+                        className="img-fluid rounded shadow-sm"
+                        style={{maxHeight: '400px', objectFit: 'cover'}}
+                    />
+                    <div className="mt-3 d-flex gap-3">
+                        <button onClick={prevImage} className="btn btn-outline-secondary">&laquo;</button>
+                        <button onClick={nextImage} className="btn btn-outline-secondary">&raquo;</button>
+                    </div>
+                </div>
+
+                <div className="col-md-6">
+                    <h4>Price: ₴{product.price}</h4>
+                    <p>Weight: {product.weight}g</p>
+                    {product.size && <p>Size: {product.size}</p>}
+                    <p className="mt-4"><strong>Ingredients:</strong></p>
+                    <ul>
+                        {product.ingredients.map((ing, index) => (
+                            <li key={index}>{ing}</li>
+                        ))}
+                    </ul>
+                    <p className="mt-4"><strong>Category:</strong> {product.category}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetailsPage;
