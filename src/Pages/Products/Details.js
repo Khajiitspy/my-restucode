@@ -52,11 +52,22 @@ const ProductDetailsPage = () => {
                     <p>Weight: {product.weight}g</p>
                     {product.size && <p>Size: {product.size}</p>}
                     <p className="mt-4"><strong>Ingredients:</strong></p>
-                    <ul>
-                        {product.ingredients.map((ing, index) => (
-                            <li key={index}>{ing}</li>
+                    <div className="d-flex flex-wrap gap-3">
+                        {product.ingredients.map((ingredient, index) => (
+                            <div key={index} className="text-center">
+                                <img
+                                    src={`${BASE_URL}/images/200_${ingredient.imageUrl}`}
+                                    alt={ingredient.name}
+                                    width={80}
+                                    height={80}
+                                    className="rounded-circle border shadow-sm mb-1"
+                                    style={{ objectFit: "cover" }}
+                                />
+                                <div>{ingredient.name}</div>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
+
                     <p className="mt-4"><strong>Category:</strong> {product.category}</p>
                 </div>
             </div>
