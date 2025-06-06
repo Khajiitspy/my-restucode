@@ -11,7 +11,7 @@ const ProductsPage = () => {
     const pageSize = 6;
 
     useEffect(() => {
-        axiosInstance.get('/api/products', {
+        axiosInstance.get('/api/products/list', {
             params: {
                 search: searchTerm,
                 page: currentPage,
@@ -43,6 +43,9 @@ const ProductsPage = () => {
                     value={searchTerm}
                     onChange={handleSearch}
                 />
+                <Link to={"/ProductCreate"} className="btn btn-primary mt-auto">
+                    Create Product
+                </Link>
             </div>
 
             <div className="row g-4">

@@ -9,6 +9,8 @@ const ProductDetailsPage = () => {
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+    console.log("DetailsPage");
+
     useEffect(() => {
         axiosInstance.get(`/api/products/${id}`).then(res => {
             setProduct(res.data);

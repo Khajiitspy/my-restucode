@@ -11,7 +11,7 @@ const CategoriesPage = () => {
     const pageSize = 5;
 
     const fetchData = () => {
-        axiosInstance.get(`/api/Categories`, {
+        axiosInstance.get(`/api/Categories/pagedlist`, {
             params: {
                 search: searchTerm,
                 page: currentPage,

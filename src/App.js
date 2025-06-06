@@ -9,21 +9,9 @@ import LoginPage from "./Pages/Account/Login"
 import RegisterPage from "./Pages/Account/Register"
 import ProductsPage from "./Pages/Products"
 import ProductDetailsPage from "./Pages/Products/Details"
-// import {useAuthStore} from "./Store/AuthStore";
-// import {jwtDecode} from "jwt-decode";
-// import {useEffect} from "react";
-//import LoginPage from "./Pages/Account/Login/index"
+import CreateProductPage from "./Pages/Products/Create"
 
 const App = () => {
-    // const { setUser } = useAuthStore((state) => state);
-    //
-    // useEffect(() => {
-    //     const token = localStorage.getItem("jwt");
-    //     if (token) {
-    //         const decoded = jwtDecode(token);
-    //         setUser(decoded);
-    //     }
-    // },[]);
 
     return (
         <>
@@ -36,6 +24,7 @@ const App = () => {
                     <Route path={"Register"} element={<RegisterPage />} />
                     <Route path={"Products"} element={<ProductsPage />} />
                     <Route path="/ProductDetails/:id" element={<ProductDetailsPage />} />
+                    <Route path={"ProductCreate"} element={<CreateProductPage />} />
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
