@@ -1,21 +1,38 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { BASE_URL } from "../../api/apiConfig";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
     console.log("DetailsPage");
 
     useEffect(() => {
         axiosInstance.get(`/api/products/${id}`).then(res => {
             setProduct(res.data);
+            console.log(product);
         });
     }, [id]);
+
+    const navigate = useNavigate();
+
+    const handleDelete = async () => {
+        const confirm = window.confirm("Are you sure you want to delete this product?");
+        if (!confirm) return;
+
+        try {
+            await axiosInstance.delete(`/api/products/remove/${currentVariant.id}`);
+            alert("Product deleted successfully.");
+            navigate("/products");
+        } catch (err) {
+            console.error("Delete failed", err);
+            alert("Failed to delete the product.");
+        }
+    };
 
     const handleSizeChange = (size) => {
         const newIndex = product.variants.findIndex(v => v.size === size);
@@ -40,8 +57,11 @@ const ProductDetailsPage = () => {
 
     if (!product) return <div>Loading...</div>;
 
+    console.log(product)
     const currentVariant = product.variants[selectedVariantIndex];
     const currentImage = currentVariant.images[currentImageIndex];
+
+    console.log(currentVariant);
 
     const availableSizes = [
         ...new Set(product.variants.map(v => v.size).filter(Boolean))
@@ -104,6 +124,15 @@ const ProductDetailsPage = () => {
 
                     <p className="mt-4"><strong>Category:</strong> {currentVariant.category}</p>
                 </div>
+                <div className="d-flex justify-content-end gap-3 mt-4">
+                    <Link to={`/ProductEdit/${currentVariant.id}`} className="btn btn-outline-primary">
+                        Edit Product
+                    </Link>
+                    <button onClick={handleDelete} className="btn btn-outline-danger">
+                        Delete Product
+                    </button>
+                </div>
+
             </div>
         </div>
     );
