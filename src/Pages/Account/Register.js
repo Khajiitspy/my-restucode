@@ -13,6 +13,7 @@ import {useFormik} from "formik";
 import {jwtDecode} from "jwt-decode";
 import LoadingOverlay from "../../Components/common/LoadingOverlay";
 import BasicFileInput from "../../Components/common/BasicFileInput/index.js";
+import {useCart} from "../../context/CartContext";
 
 const validationSchema = Yup.object().shape({
 	email: Yup.string().required("Please Enter Email!"),
@@ -25,6 +26,7 @@ const validationSchema = Yup.object().shape({
 const RegisterPage = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const {setUser} = useAuth();
+	const { syncGuestCartToServer } = useCart();
 
 	const initValues = {
 		email: "",
@@ -55,6 +57,8 @@ const RegisterPage = () => {
 				name: payload['name'],
 				image: payload['image'],
 			});
+			
+			await syncGuestCartToServer(token);
 			
 			navigate('/');
 		} catch (error) {

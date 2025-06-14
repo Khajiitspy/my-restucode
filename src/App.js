@@ -11,6 +11,8 @@ import ProductsPage from "./Pages/Products"
 import ProductDetailsPage from "./Pages/Products/Details"
 import CreateProductPage from "./Pages/Products/Create"
 import EditProductPage from "./Pages/Products/Edit"
+import CartPage from "./Pages/Cart/View";
+
 
 const App = () => {
 
@@ -27,6 +29,7 @@ const App = () => {
                     <Route path="/ProductDetails/:id" element={<ProductDetailsPage />} />
                     <Route path={"ProductCreate"} element={<CreateProductPage />} />
                     <Route path="ProductEdit/:id" element={<EditProductPage />} />
+                    <Route path="/cart" element={<CartPage />} />
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

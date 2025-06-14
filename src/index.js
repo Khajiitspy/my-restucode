@@ -6,15 +6,18 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 import { AuthProvider } from './context/AuthContext.js';
+import {CartProvider} from "./context/CartContext";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // What is the difference between just Router?
     <React.StrictMode>
         <AuthProvider>
-            <BrowserRouter>
-                <App/>
-            </BrowserRouter>
+            <CartProvider>
+                <BrowserRouter>
+                    <App/>
+                </BrowserRouter>
+            </CartProvider>
         </AuthProvider>
     </React.StrictMode>
 );

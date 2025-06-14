@@ -3,6 +3,7 @@ import axiosInstance from "../../api/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import { BASE_URL } from "../../api/apiConfig";
 import DragDropUpload from "../../Components/common/ImageUploader/DragDropUplaod";
+import {Input, Modal} from "antd";
 
 const EditProductPage = () => {
     const { id } = useParams();
@@ -24,8 +25,13 @@ const EditProductPage = () => {
     const [ingredients, setIngredients] = useState([]);
     const [errorMessage, setErrorMessage] = useState(null);
 
+    const [isIngModalVisible, setIsIngModalVisible] = useState(false);
+    const[newIngredient, setNewIngredient] = useState({
+        Name: "",
+        Image : null
+    });
 
-    // Load product by ID
+
     useEffect(() => {
         if (!id) return;
 
@@ -33,16 +39,12 @@ const EditProductPage = () => {
             .then(res => {
                 const current = res.data;
 
-                // Prefill all fields directly
                 setProductData({
-                    name: current.name,
-                    slug: current.slug,
-                    price: current.price,
-                    weight: current.weight,
-                    productSizeId: current.productSizeId ?? "",
-                    categoryId: current.categoryId ?? "",
-                    ingredientIds: current.ingredientIds ?? [],
+                    ...productData,
+                    ...current
                 });
+
+                console.log("Product Data", productData);
 
                 const updatedFileList = (current.productImages || []).map((imageName, idx) => ({
                     uid: `${idx}`,
@@ -56,10 +58,6 @@ const EditProductPage = () => {
             .catch(err => console.error("Error loading product", err));
     }, [id]);
 
-
-
-
-    // Load sizes, categories, and ingredients
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -77,7 +75,6 @@ const EditProductPage = () => {
         };
         fetchData();
     }, []);
-
 
     const handleIngredientToggle = (id) => {
         setProductData(prev => {
@@ -112,6 +109,50 @@ const EditProductPage = () => {
             setErrorMessage(err);
             console.error(err);
         }
+    };
+
+    const showIngModal = () => {
+        setIsIngModalVisible(true);
+    };
+
+    const handleIngModalOk = async () => {
+        try {
+            // const formData = new FormData();
+            // formData.append("name", newIngredient.name);
+            // formData.append("imageFile", newIngredient.imageFile);
+
+            const res = await axiosInstance.post("/api/Products/ingredients", newIngredient, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            console.log("server responded:", res.data);
+
+            const newIng = res.data;
+
+            setIngredients(prev => [...prev, newIng]);
+
+            setProductData(prev => {
+                const updatedIds = prev.ingredientIds.includes(newIng.id)
+                    ? prev.ingredientIds
+                    : [...prev.ingredientIds, newIng.id];
+
+                return {
+                    ...prev,
+                    ingredientIds: updatedIds
+                };
+            });
+
+            setIsIngModalVisible(false);
+        } catch (error) {
+            console.log("Помилка при створенні інгредієнта");
+        }
+    };
+
+    const handleIngModalCancel = () => {
+        setIsIngModalVisible(false);
+        newIngredient.Name = "";
+        newIngredient.Image = null;
     };
 
 
@@ -233,11 +274,49 @@ const EditProductPage = () => {
                             {ing.name}
                         </div>
                     ))}
+                    <div
+                        onClick={() => showIngModal()} 
+                        style={{
+                            cursor: "pointer",
+                            userSelect: "none",
+                            padding: "5px 10px",
+                            border: "1px solid black",
+                            backgroundColor: "gray",
+                            marginRight: 8,
+                            marginBottom: 8
+                        }}
+                    >+
+                    </div>
+                    
                     {productData.ingredientIds.length === 0 && (
                         <span className="text-muted">Жодного інгредієнта не додано</span>
                     )}
                 </div>
             </div>
+
+            <Modal
+                title="Add Ingredient"
+                open={isIngModalVisible}
+                onOk={handleIngModalOk}
+                onCancel={handleIngModalCancel}
+                okText="Add"
+                cancelText="Cancel"
+            >
+                <Input
+                    placeholder="Ingredient Name"
+                    value={newIngredient.Name}
+                    onChange={(e) => setNewIngredient({...newIngredient, Name: e.target.value})}
+                />
+                
+                
+                <Input
+                    type="file"
+                    placeholder="file"
+                    className={`form-control mt-4`}
+                    onChange={(e) => setNewIngredient({...newIngredient, Image: e.target.files[0]})}
+                    accept="image/*"
+                />
+            </Modal>
         </div>
     );
 };

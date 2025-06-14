@@ -7,6 +7,7 @@ import BasicFileInput from "../../Components/common/BasicFileInput";
 
 import {useFormik} from "formik";
 import * as Yup from 'yup';
+import {useAuth} from "../../context/AuthContext";
 
 const validationSchema = Yup.object().shape({
     id: Yup.number().required(),
@@ -42,8 +43,12 @@ const EditCategoryPage = () => {
 
     const [viewImage, setViewImage] = useState('');
 
+    const { user } = useAuth();
+    
     useEffect(() => {
-        axiosInstance.get(`/api/Categories/${id}`)
+        axiosInstance.get(`/api/Categories/${id}`, {
+            headers: { Authorization: `Bearer ${user.token}` }
+        })
             .then(res => {
                 setInitialValues({
                     id: res.data.id,
@@ -57,7 +62,7 @@ const EditCategoryPage = () => {
                 alert("Failed to load category");
                 console.error(err);
             });
-    }, [id]);
+    }, [id] [user]);
 
     const handleFormikSubmit = async (values, { setErrors }) =>{
         const formData = new FormData();

@@ -10,6 +10,9 @@ import {EmailInput} from "../../Components/common/EmailInput";
 import {PasswordInput} from "../../Components/common/PasswordInput";
 //import {useAuthStore} from "../../Store/AuthStore.js";
 
+import { useCart } from "../../context/CartContext";
+
+
 
 import * as Yup from "yup";
 import {useFormik} from "formik";
@@ -27,6 +30,8 @@ const LoginPage = () => {
     // const { setUser, user } = useAuthStore((state) => state);
     // console.log("User authenticated", user);
     const { setUser } = useAuth();
+    const { syncGuestCartToServer } = useCart();
+
 
     const initValues = {
         email: "",
@@ -53,6 +58,8 @@ const LoginPage = () => {
                 name: payload['name'],
                 image: payload['image'],
             });
+            
+            await syncGuestCartToServer(token);
 
             navigate('/');
 
@@ -103,8 +110,6 @@ const LoginPage = () => {
         setIsLoading(false);
 
     };
-
-
 
     const formik = useFormik({
         initialValues: initValues,

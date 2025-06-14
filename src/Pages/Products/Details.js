@@ -3,6 +3,7 @@ import {Link, useParams} from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import { BASE_URL } from "../../api/apiConfig";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
 const ProductDetailsPage = () => {
     const { id } = useParams();
@@ -10,6 +11,7 @@ const ProductDetailsPage = () => {
     const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     console.log("DetailsPage");
+    const { addToCart } = useCart();
 
     useEffect(() => {
         axiosInstance.get(`/api/products/${id}`).then(res => {
@@ -34,11 +36,28 @@ const ProductDetailsPage = () => {
         }
     };
 
+    const handleAddToCart = async () => {
+        try {
+            await addToCart({
+                productVariantId: currentVariant.id,
+                quantity: 1,
+                imageName: currentVariant.images[0],
+                name: currentVariant.name,
+                categoryName: currentVariant.category,
+                price: currentVariant.price,
+            });
+            alert("Added to cart!");
+        } catch (err) {
+            console.error("Add to cart failed", err);
+            alert("Failed to add to cart.");
+        }
+    };
+
     const handleSizeChange = (size) => {
         const newIndex = product.variants.findIndex(v => v.size === size);
         if (newIndex !== -1) {
             setSelectedVariantIndex(newIndex);
-            setCurrentImageIndex(0); // reset image carousel
+            setCurrentImageIndex(0);
         }
     };
 
@@ -130,6 +149,9 @@ const ProductDetailsPage = () => {
                     </Link>
                     <button onClick={handleDelete} className="btn btn-outline-danger">
                         Delete Product
+                    </button>
+                    <button onClick={handleAddToCart} className="btn btn-success">
+                        Add to Cart
                     </button>
                 </div>
 
