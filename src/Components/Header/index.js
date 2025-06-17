@@ -31,6 +31,16 @@ const Header = () => {
                                 Cart <span className="badge bg-light text-dark">{cartCount}</span>
                             </NavLink>
                         </li>
+                        {user ? (
+                            <li className="nav-item">
+                                <NavLink to="/my-orders" className={({isActive}) => isActive ? 'nav-link active' : 'nav-link'}>
+                                    My Orders
+                                </NavLink>
+                            </li>
+                        ):(
+                            <></>
+                        )}
+
                     </ul>
 
                     <ul className="navbar-nav ms-auto">
